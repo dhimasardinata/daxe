@@ -1,0 +1,10 @@
+[package]
+name = "benchmark"
+version = "1.0.0"
+edition = "c++20"
+
+[build]
+compiler = "auto"
+sources = ["benchmark.cpp"]
+bin = "benchmark"
+flags = ["-I", "../include", "-O3", "-DNDEBUG"]

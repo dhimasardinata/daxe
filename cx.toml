@@ -1,0 +1,9 @@
+[package]
+name = "daxe"
+version = "0.1.0"
+edition = "c++20"
+
+[build]
+bin = "daxe_test"
+compiler = "clang"
+flags = ["-std=c++20", "-Wall", "-Iinclude"]

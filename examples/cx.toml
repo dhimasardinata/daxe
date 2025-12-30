@@ -1,0 +1,12 @@
+[package]
+name = "daxe"
+version = "0.1.0"
+description = "D.A's Axe - Cut through C++ verbosity"
+author = "Dhimas Ardinata"
+license = "MIT"
+repository = "https://github.com/dhimasardinata/daxe"
+edition = "c++20"
+
+[build]
+compiler = "auto"
+include = ["../include"]

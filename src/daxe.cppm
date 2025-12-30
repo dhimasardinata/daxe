@@ -1,59 +1,100 @@
 module;
 
+// ==========================================
 // GLOBAL MODULE FRAGMENT
-// Include ALL system headers here to avoid conflicts
-#include <iostream>
-#include <vector>
-#include <string>
+// ==========================================
+// System headers MUST be included here to avoid
+// "block-scope extern declaration" errors in C++20 modules.
+
+// Core
 #include <algorithm>
-#include <numeric>
+#include <bit>
+#include <cctype>
 #include <cmath>
-#include <set>
-#include <map>
-#include <unordered_set>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <deque>
-#include <utility>
+#include <compare>
+#include <concepts>
+#include <cstdint>
+#include <cstring>
+#include <initializer_list>
+#include <iostream>
+#include <iterator>
 #include <limits>
+#include <memory>
+#include <new>
+#include <numbers>
+#include <numeric>
+#include <ranges>
+#include <span>
+#include <string>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+// Containers
+#include <array>
+#include <deque>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
+
+// IO & Filesystem
+#include <charconv>  // Needed for daxe/convert.h
 #include <fstream>
 #include <sstream>
-#include <cctype>
-#include <cstdint>
-#include <optional>
-#include <variant>
+
+// Safety & Functional
 #include <functional>
+#include <optional>
 #include <stdexcept>
-#include <array>
-#include <random>
+#include <variant>
+
+// Threading & Time
 #include <chrono>
-#include <thread>
 #include <mutex>
-#include <new>
-#include <memory>
-#include <type_traits>
-#include <concepts>
-#include <iterator>
-#include <ranges>
-#include <initializer_list>
-#include <compare>
-#include <bit>
-#include <numbers>
-#include <span>
+#include <random>
+#include <thread>
+
+// C++23 Features (Feature detection)
+// This fixes the specific error with std::print
+#if defined(__has_include)
+#if __has_include(<print>)
+#include <print>
+#endif
+#if __has_include(<expected>)
+#include <expected>
+#endif
+#if __has_include(<mdspan>)
+#include <mdspan>
+#endif
+#endif
 
 export module daxe;
 
-// Define export macro BEFORE including headers
+// ==========================================
+// MODULE PURVIEW
+// ==========================================
+
+// Define export macro BEFORE including daxe headers
+// This tells daxe macros to use 'export' keyword
 #define DAXE_EXPORT export
+
+// Disable auto-importing to global scope inside the module itself
+// Users will use "using namespace dax;" if they want that.
 #define DAXE_NO_GLOBAL
 
 // Include the master header
-// Since DAXE_EXPORT is strictly defined as 'export', 
-// and DAXE_NAMESPACE_BEGIN uses it, all dax content will be exported.
+// Since system headers were included in the Global Fragment,
+// headers inside daxe.h will use those definitions without
+// attaching them to this named module.
 #include "../include/daxe.h"
 
-// Note: Macros (ensure, expect, etc.) are NOT exported.
-// Users must include <daxe/debug.h> or similar if they need macros.
-
+// Explicitly export the namespace
 export using namespace dax;
+
+// Note: Macros cannot be exported by modules.
+// Users needing macros (like debug macros) must still #include <daxe/debug.h>
+// or <daxe/macros.h> alongside import daxe;

@@ -43,9 +43,6 @@ inline std::istream& operator>>(std::istream& is, i128& n) {
     if (s.empty()) return is;
     if (s[0] == '-') { neg = true; i = 1; }
     
-    // Limits
-    const i128 LIMIT = neg ? (static_cast<i128>(1) << 127) : (~(static_cast<i128>(1) << 127));
-    
     // For simplicity with i128, working with positive u128 is easier but conversion is tricky for MIN 
     // Let's use u128 for parsing then check range
     u128 val = 0;

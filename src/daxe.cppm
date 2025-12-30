@@ -78,10 +78,6 @@ export module daxe;
 // MODULE PURVIEW
 // ==========================================
 
-// Define export macro BEFORE including daxe headers
-// This tells daxe macros to use 'export' keyword
-#define DAXE_EXPORT export
-
 // Disable auto-importing to global scope inside the module itself
 // Users will use "using namespace dax;" if they want that.
 #define DAXE_NO_GLOBAL
@@ -90,11 +86,9 @@ export module daxe;
 // Since system headers were included in the Global Fragment,
 // headers inside daxe.h will use those definitions without
 // attaching them to this named module.
+export {
 #include "../include/daxe.h"
+}
 
 // Explicitly export the namespace
 export using namespace dax;
-
-// Note: Macros cannot be exported by modules.
-// Users needing macros (like debug macros) must still #include <daxe/debug.h>
-// or <daxe/macros.h> alongside import daxe;

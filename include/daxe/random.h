@@ -95,7 +95,6 @@ public:
 #ifndef DAXE_MODULE
 // Thread-local instance for thread safety (header-only mode)
 inline thread_local Random rng;
-#endif
 
 // Convenience functions using global instance
 template <typename T>
@@ -114,6 +113,7 @@ inline std::vector<T> sample(const std::vector<T>& p, size_t k) { return rng.sam
 
 template <typename T>
 inline std::vector<T> choices(const std::vector<T>& p, size_t k) { return rng.choices(p, k); }
+#endif
 
 DAXE_NAMESPACE_END
 

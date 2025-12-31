@@ -118,4 +118,22 @@ export namespace dax::detail {
 export namespace dax {
     // Random RNG instance - thread_local for thread safety
     inline thread_local Random rng{};
+    
+    // Convenience functions using global instance
+    template <typename T>
+    inline T rand(T min, T max) { return rng.rand(min, max); }
+
+    inline bool randbool(f64 p = 0.5) { return rng.randbool(p); }
+
+    template <typename Container>
+    inline auto choice(const Container& c) { return rng.choice(c); }
+
+    template <typename Container>
+    inline void shuffle(Container& c) { rng.shuffle(c); }
+
+    template <typename T>
+    inline std::vector<T> sample(const std::vector<T>& p, size_t k) { return rng.sample(p, k); }
+
+    template <typename T>
+    inline std::vector<T> choices(const std::vector<T>& p, size_t k) { return rng.choices(p, k); }
 }

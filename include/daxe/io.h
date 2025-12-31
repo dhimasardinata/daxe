@@ -30,7 +30,10 @@ namespace detail {
             std::cout.tie(nullptr);
         }
     };
+#ifndef DAXE_MODULE
+    // When used as a header-only library, define inline variable here
     inline FastIO fastio_{};
+#endif
 }
 
 // 128-bit I/O with input validation

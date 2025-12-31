@@ -78,6 +78,10 @@ export module daxe;
 // MODULE PURVIEW
 // ==========================================
 
+// Tell headers we're building as a module - skip inline variable definitions
+// They will be defined below in the module purview instead
+#define DAXE_MODULE
+
 // Disable auto-importing to global scope inside the module itself
 // Users will use "using namespace dax;" if they want that.
 #define DAXE_NO_GLOBAL
@@ -94,15 +98,24 @@ export {
 export using namespace dax;
 
 // ==========================================
-// FORCE INSTANTIATION FOR MSVC MODULES
+// MSVC MODULE FIX: Inline Variable Definitions
 // ==========================================
-// MSVC requires inline variables to have their definitions emitted
-// in the module's object file. We force this by "using" them.
+// MSVC C++20 modules require inline variables to be explicitly
+// defined in the module interface unit when they are part of 
+// the module's interface. These definitions ensure the symbols
+// are properly emitted and exported.
+//
+// The issue: `inline` variables in headers included via `export {}`
+// become module-internal but their definitions may not be emitted.
+// Solution: Explicitly define and export them in the module purview.
 
-namespace {
-    // Force the FastIO constructor to run (it sets up fast I/O)
-    [[maybe_unused]] auto& force_fastio_ = dax::detail::fastio_;
-    
-    // Force the Random instance to be instantiated  
-    [[maybe_unused]] auto& force_rng_ = dax::rng;
+export namespace dax::detail {
+    // FastIO is already constructed via its inline definition in io.h
+    // We re-export it here to ensure MSVC emits the definition
+    inline FastIO fastio_{};
+}
+
+export namespace dax {
+    // Random RNG instance - thread_local for thread safety
+    inline thread_local Random rng{};
 }

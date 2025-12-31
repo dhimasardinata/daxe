@@ -92,8 +92,10 @@ public:
     }
 };
 
-// Thread-local instance for thread safety
+#ifndef DAXE_MODULE
+// Thread-local instance for thread safety (header-only mode)
 inline thread_local Random rng;
+#endif
 
 // Convenience functions using global instance
 template <typename T>

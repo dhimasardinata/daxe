@@ -21,7 +21,8 @@
 
 DAXE_NAMESPACE_BEGIN
 
-// Fast I/O setup
+// Fast I/O setup using Meyers Singleton pattern
+// This approach is compatible with C++20 modules across all compilers (MSVC, Clang, GCC)
 namespace detail {
     struct FastIO {
         FastIO() noexcept {
@@ -30,10 +31,15 @@ namespace detail {
             std::cout.tie(nullptr);
         }
     };
-#ifndef DAXE_MODULE
-    // When used as a header-only library, define inline variable here
-    inline FastIO fastio_{};
-#endif
+    
+    // Function-local static ensures single instance and proper initialization
+    inline FastIO& fastio() {
+        static FastIO instance{};
+        return instance;
+    }
+    
+    // Force initialization at startup
+    namespace { [[maybe_unused]] auto& init_ = fastio(); }
 }
 
 // 128-bit I/O with input validation

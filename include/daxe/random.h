@@ -92,28 +92,30 @@ public:
     }
 };
 
-#ifndef DAXE_MODULE
-// Thread-local instance for thread safety (header-only mode)
-inline thread_local Random rng;
+// Thread-local RNG instance using Meyers Singleton pattern
+// This approach is compatible with C++20 modules across all compilers
+inline Random& rng() {
+    static thread_local Random instance{};
+    return instance;
+}
 
-// Convenience functions using global instance
+// Convenience functions using rng() function
 template <typename T>
-inline T rand(T min, T max) { return rng.rand(min, max); }
+inline T rand(T min, T max) { return rng().rand(min, max); }
 
-inline bool randbool(f64 p = 0.5) { return rng.randbool(p); }
+inline bool randbool(f64 p = 0.5) { return rng().randbool(p); }
 
 template <typename Container>
-inline auto choice(const Container& c) { return rng.choice(c); }
+inline auto choice(const Container& c) { return rng().choice(c); }
 
 template <typename Container>
-inline void shuffle(Container& c) { rng.shuffle(c); }
+inline void shuffle(Container& c) { rng().shuffle(c); }
 
 template <typename T>
-inline std::vector<T> sample(const std::vector<T>& p, size_t k) { return rng.sample(p, k); }
+inline std::vector<T> sample(const std::vector<T>& p, size_t k) { return rng().sample(p, k); }
 
 template <typename T>
-inline std::vector<T> choices(const std::vector<T>& p, size_t k) { return rng.choices(p, k); }
-#endif
+inline std::vector<T> choices(const std::vector<T>& p, size_t k) { return rng().choices(p, k); }
 
 DAXE_NAMESPACE_END
 

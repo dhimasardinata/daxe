@@ -78,10 +78,6 @@ export module daxe;
 // MODULE PURVIEW
 // ==========================================
 
-// Tell headers we're building as a module - skip inline variable definitions
-// They will be defined below in the module purview instead
-#define DAXE_MODULE
-
 // Disable auto-importing to global scope inside the module itself
 // Users will use "using namespace dax;" if they want that.
 #define DAXE_NO_GLOBAL
@@ -90,50 +86,13 @@ export module daxe;
 // Since system headers were included in the Global Fragment,
 // headers inside daxe.h will use those definitions without
 // attaching them to this named module.
+//
+// NOTE: The headers now use Meyers Singleton pattern for global
+// state (get_fastio(), rng()) which is compatible with C++20 modules
+// across all compilers (MSVC, Clang, GCC) without special handling.
 export {
 #include "../include/daxe.h"
 }
 
 // Explicitly export the namespace
 export using namespace dax;
-
-// ==========================================
-// MSVC MODULE FIX: Inline Variable Definitions
-// ==========================================
-// MSVC C++20 modules require inline variables to be explicitly
-// defined in the module interface unit when they are part of 
-// the module's interface. These definitions ensure the symbols
-// are properly emitted and exported.
-//
-// The issue: `inline` variables in headers included via `export {}`
-// become module-internal but their definitions may not be emitted.
-// Solution: Explicitly define and export them in the module purview.
-
-export namespace dax::detail {
-    // FastIO is already constructed via its inline definition in io.h
-    // We re-export it here to ensure MSVC emits the definition
-    inline FastIO fastio_{};
-}
-
-export namespace dax {
-    // Random RNG instance - thread_local for thread safety
-    inline thread_local Random rng{};
-    
-    // Convenience functions using global instance
-    template <typename T>
-    inline T rand(T min, T max) { return rng.rand(min, max); }
-
-    inline bool randbool(f64 p = 0.5) { return rng.randbool(p); }
-
-    template <typename Container>
-    inline auto choice(const Container& c) { return rng.choice(c); }
-
-    template <typename Container>
-    inline void shuffle(Container& c) { rng.shuffle(c); }
-
-    template <typename T>
-    inline std::vector<T> sample(const std::vector<T>& p, size_t k) { return rng.sample(p, k); }
-
-    template <typename T>
-    inline std::vector<T> choices(const std::vector<T>& p, size_t k) { return rng.choices(p, k); }
-}

@@ -92,3 +92,17 @@ export {
 
 // Explicitly export the namespace
 export using namespace dax;
+
+// ==========================================
+// FORCE INSTANTIATION FOR MSVC MODULES
+// ==========================================
+// MSVC requires inline variables to have their definitions emitted
+// in the module's object file. We force this by "using" them.
+
+namespace {
+    // Force the FastIO constructor to run (it sets up fast I/O)
+    [[maybe_unused]] auto& force_fastio_ = dax::detail::fastio_;
+    
+    // Force the Random instance to be instantiated  
+    [[maybe_unused]] auto& force_rng_ = dax::rng;
+}

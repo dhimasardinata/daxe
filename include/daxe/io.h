@@ -33,13 +33,11 @@ namespace detail {
     };
     
     // Function-local static ensures single instance and proper initialization
+    // Called automatically on first I/O operation
     inline FastIO& fastio() {
         static FastIO instance{};
         return instance;
     }
-    
-    // Force initialization at startup
-    namespace { [[maybe_unused]] auto& init_ = fastio(); }
 }
 
 // 128-bit I/O with input validation
@@ -239,6 +237,9 @@ inline void println(const Args&... args) {
 
 template <typename... Args>
 inline void printspaced(const Args&... args) { ((std::cout << args << ' '), ...); }
+
+// Fast I/O initialization - call this at the start of main() for best performance
+inline void fastio() { detail::fastio(); }
 
 // Input functions
 template <typename T>
